@@ -25,3 +25,4 @@ This repo implements a simple **digit classification** task using **Support Vect
    ```bash
    python plot_digits_classification.py
 
+Note: This is modified in branch branch1
