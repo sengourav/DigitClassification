@@ -1,21 +1,21 @@
 name: CI - Python (pip)
 
-# Run on push to any branch and on PRs; also allow manual trigger
 on:
   push:
-    branches: ['**']
+    branches: ['**']         # Run on every branch push
   pull_request:
-    branches: ['**']
-  workflow_dispatch: {}
+    branches: ['**']         # Run on every PR
+  workflow_dispatch: {}      # Allow manual trigger from Actions tab
 
 jobs:
   test:
-    name: Test on ${{ matrix.python-version }} / ${{ runner.os }}
-    runs-on: ubuntu-latest
+    name: Test on Python ${{ matrix.python-version }} / OS ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        python-version: [3.9, 3.11]   # test on multiple Python versions
+        python-version: [3.9, 3.11]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout repository
@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Cache pip
+      - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -43,9 +43,3 @@ jobs:
       - name: Run tests
         run: pytest -q
 
-      - name: Upload test logs (artifact)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-logs
-          path: ./pytest.log   # create a log in your tests step if desired
